@@ -1,5 +1,5 @@
-% Julia implementation of most of the kernel functions from
-% crsouza.blogspot.com/2010/03/kernel-functions-for-machine-learning.html
+# Julia implementation of most of the kernel functions from
+# crsouza.blogspot.com/2010/03/kernel-functions-for-machine-learning.html
 
 linear_kernel(x::Array, y::Array; c::Real=0) = (x'*y .+ c)
 
