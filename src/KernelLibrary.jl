@@ -31,7 +31,7 @@ invmultiquad_kernel(x::Array, y::Array, c::Real) = 1./sqrt(sum((x.-y).^2.,1) .+ 
 function circular_kernel(x::Array, y::Array, σ::Real)
 	n = sqrt(sum((x.-y).^2.,1))./σ
 	out = (2./π)*arccos(-n) - (2./π)*n*sqrt(1.0 .- n.^2)
-	out(n.>=σ) = 0
+	out[n.>=σ] = 0
 	vec(out)
 end
 
