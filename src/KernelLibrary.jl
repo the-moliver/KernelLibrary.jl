@@ -1,6 +1,5 @@
 module KernelLibrary
 
-
 export linear_kernel, polynomial_kernel, laplacian_kernel, gaussian_kernel, anova_kernel, rbf_kernel, fractrbf_kernel, rationalquad_kernel, multiquad_kernel, invmultiquad_kernel, circular_kernel, spherical_kernel, wave_kernel
 export power_kernel, log_kernel, spline_kernel, cauchy_kernel, chisquare_kernel, histintersect_kernel, genhistintersect_kernel, fourier_kernel, sigmoid_kernel. wavelet_kernel, transinvwavelet_kernel
 # Julia implementation of most of the kernel functions from
