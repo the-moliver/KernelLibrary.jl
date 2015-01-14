@@ -38,7 +38,7 @@ end
 function spherical_kernel(x::Array, y::Array, σ::Real)
 	n = sqrt(sum((x.-y).^2.,1))./σ
 	out = 1 - 1.5.*n + .5.*n.^3
-	out(n.>=σ) = 0
+	out[n.>=σ] = 0
 	vec(out)
 end
 
