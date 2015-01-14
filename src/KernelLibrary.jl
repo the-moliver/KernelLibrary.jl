@@ -17,7 +17,7 @@ anova_kernel(x::Array, y::Array, σ::Real, d::Real) = sum(exp(-σ*(x.-y).^2.).^d
 
 rbf_kernel(x::Array, y::Array, σ::Real) = exp(-sum(abs(x.-y),1) ./ 2*sigma.^ 2.)
 
-fractrbf_kernel(x::Array, y::Array, σ::Real, fract::Real) = exp(-sum(abs(x .- y).^fract,1).^.(1/fract) ./ 2*σ.^ 2.)
+fractrbf_kernel(x::Array, y::Array, σ::Real, fract::Real) = exp(-sum(abs(x .- y).^fract,1).^(1/fract) ./ 2*σ.^ 2.)
 
 function rationalquad_kernel(x::Array, y::Array, c::Real)
 	n = sum((x.-y).^2.,1)
