@@ -141,7 +141,7 @@ end
 
 function transinvwavelet_kernel{T}(x::Array{T}, y::Vector{T}, a::Real)
 	a=convert(T, a);
-	prod(motherwavelet((x.-y)./a),1))
+	prod(motherwavelet((x.-y)./a),1)
 end
 
 
