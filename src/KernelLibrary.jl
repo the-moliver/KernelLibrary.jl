@@ -74,7 +74,7 @@ end
 
 function wave_kernel{T}(x::Array{T}, y::Vector{T}, θ::Real)
 	θ=convert(T, θ)
-	n = sqrt(sum((x.-y).^2.,1))
+	n = sqrt(sum((x.-y).^2,1))
 	(θ./n).*sin(n./θ)
 end
 
@@ -92,13 +92,16 @@ function spline_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
 	σ=convert(T, σ)
 	xy = x.*y
 	mxy = broadcast(min, x,y)
-    z = 1 .+ xy .+ xy.*mxy - ((x.+y)/2).*mxy.^2 + (1/3).*mxy.^3
+    z = 1 .+ xy .+ xy.*mxy - ((x.+y)/2).*mxy.^2 + (mxy.^3)/3
     prod(z,1)
 end
 
-cauchy_kernel(x::Array, y::Vector, σ::Real) = 1.0 ./ (1.0 .+ (sum((x.-y).^2.,1) ./ σ.^2.))
+function cauchy_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
+	σ=convert(T, σ) 
+	1 ./ (1 .+ (sum((x.-y).^2,1) ./ σ.^2))
+end
 
-chisquare_kernel(x::Array, y::Vector) = 1.0 .- sum((x.-y).^2 ./ (.5.*(x.+y)),1)
+chisquare_kernel(x::Array, y::Vector) = 1 .- sum((x.-y).^2 ./ ((x.+y)/2),1)
 
 histintersect_kernel(x::Array, y::Vector) = sum(broadcast(min, x,y),1)
 
