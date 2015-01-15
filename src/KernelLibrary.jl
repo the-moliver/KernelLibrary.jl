@@ -101,29 +101,48 @@ function cauchy_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
 	1 ./ (1 .+ (sum((x.-y).^2,1) ./ σ.^2))
 end
 
-chisquare_kernel(x::Array, y::Vector) = 1 .- sum((x.-y).^2 ./ ((x.+y)/2),1)
+function chisquare_kernel{T}(x::Array{T}, y::Vector{T})
+	1 .- sum((x.-y).^2 ./ ((x.+y)/2),1)
+end
 
-histintersect_kernel(x::Array, y::Vector) = sum(broadcast(min, x,y),1)
+function histintersect_kernel{T}(x::Array{T}, y::Vector{T})
+	sum(broadcast(min, x,y),1)
+end
 
-genhistintersect_kernel(x::Array, y::Vector, α::Real, β::Real) = sum(broadcast(min, abs(x).^α,abs(y).^β),1)
+function genhistintersect_kernel{T}(x::Array{T}, y::Vector{T}, α::Real, β::Real)
+	α=convert(T, α); β=convert(T, β);
+	sum(broadcast(min, abs(x).^α,abs(y).^β),1)
+end
 
-gentstudent_kernel(x::Array, y::Vector, d::Real) = 1 ./ (1.0 .+ sqrt(sum((x.-y).^2.,1)).^d)
+function gentstudent_kernel{T}(x::Array{T}, y::Vector{T}, d::Real)
+	d=convert(T, d)
+	1 ./ (1.0 .+ sqrt(sum((x.-y).^2.,1)).^d)
+end
 
-function fourier_kernel(x::Array, y::Vector, a::Real)
+function fourier_kernel{T}(x::Array{T}, y::Vector{T}, a::Real)
+	a=convert(T, a)
     dist = x.-y;
     dist[dist==0] = eps(eltype(x))
     z = sin(a + 1/2)*(dist(i))./sin(dist(i)/2);
-    vec(prod(z,1))
+    prod(z,1)
 end
 
-sigmoid_kernel(x::Array, y::Vector; α::Real=1, c::Real=0) = tanh(α*x'*y + c)
+function sigmoid_kernel{T}(x::Array{T}, y::Vector{T}; α::Real=1, c::Real=0)
+	α=convert(T, α); c=convert(T, c);
+	tanh(α*x'*y + c)
+end
 
 motherwavelet(x::Array) = cos(1.75.*x).*exp(-(x.^2)./2)
 
-wavelet_kernel(x::Array, y::Vector, a::Real, c::Real) = vec(prod(motherwavelet((x.-c)./a).*motherwavelet((y.-c)./a),1))
+function wavelet_kernel{T}(x::Array{T}, y::Vector{T}, a::Real, c::Real)
+	a=convert(T, a); c=convert(T, c);
+	prod(motherwavelet((x.-c)./a).*motherwavelet((y.-c)./a),1)
+end
 
-transinvwavelet_kernel(x::Array, y::Vector, a::Real) = vec(prod(motherwavelet((x.-y)./a),1))
-
+function transinvwavelet_kernel{T}(x::Array{T}, y::Vector{T}, a::Real)
+	a=convert(T, a);
+	prod(motherwavelet((x.-y)./a),1))
+end
 
 
 
