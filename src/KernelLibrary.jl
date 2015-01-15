@@ -46,41 +46,54 @@ function rationalquad_kernel{T}(x::Array{T}, y::Vector{T}, c::Real)
 	1 .- n./(n .+ c)
 end
 
-function multiquad_kernel(x::Array, y::Vector, c::Real) = sqrt(sum((x.-y).^2.,1) .+ c^2.)
+function multiquad_kernel{T}(x::Array{T}, y::Vector{T}, c::Real)
+	c = convert(T, c)
+	sqrt(sum((x.-y).^2,1) .+ c^2)
+end
 
 function invmultiquad_kernel{T}(x::Array{T}, y::Vector{T}, c::Real)
 	c = convert(T, c)
 	1 ./ sqrt(sum((x.-y).^2,1) .+ c^2)
 end
 
-function circular_kernel(x::Array, y::Vector, σ::Real)
-	n = sqrt(sum((x.-y).^2.,1))./σ
-	out = (2./π)*arccos(-n) - (2./π)*n*sqrt(1.0 .- n.^2)
+function circular_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
+	σ=convert(T, σ)
+	n = sqrt(sum((x.-y).^2,1))./σ
+	out = (2/π)*arccos(-n) - (2/π)*n*sqrt(1 .- n.^2)
 	out[n.>=σ] = 0
 	out
 end
 
-function spherical_kernel(x::Array, y::Vector, σ::Real)
-	n = sqrt(sum((x.-y).^2.,1))./σ
+function spherical_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
+	σ=convert(T, σ)
+	n = sqrt(sum((x.-y).^2,1))./σ
 	out = 1 - 1.5.*n + .5.*n.^3
 	out[n.>=σ] = 0
 	out
 end
 
-function wave_kernel(x::Array, y::Vector, θ::Real)
+function wave_kernel{T}(x::Array{T}, y::Vector{T}, θ::Real)
+	θ=convert(T, θ)
 	n = sqrt(sum((x.-y).^2.,1))
-	vec((θ./n).*sin(n./θ))
+	(θ./n).*sin(n./θ)
 end
 
-power_kernel(x::Array, y::Vector, d::Real) = -sqrt(sum((x.-y).^2.,1)).^d
+function power_kernel{T}(x::Array{T}, y::Vector{T}, d::Real)
+	d=convert(T, d)
+	-sqrt(sum((x.-y).^2,1)).^d
+end
 
-log_kernel(x::Array, y::Vector, d::Real) = -log(sqrt(sum((x.-y).^2.,1)).^d + 1)
+function log_kernel{T}(x::Array{T}, y::Vector{T}, d::Real)
+	d=convert(T, d)
+	-log(sqrt(sum((x.-y).^2.,1)).^d + 1)
+end
 
-function spline_kernel(x::Array, y::Vector, σ::Real)
+function spline_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
+	σ=convert(T, σ)
 	xy = x.*y
 	mxy = broadcast(min, x,y)
     z = 1 .+ xy .+ xy.*mxy - ((x.+y)/2).*mxy.^2 + (1/3).*mxy.^3
-    vec(prod(z,1))
+    prod(z,1)
 end
 
 cauchy_kernel(x::Array, y::Vector, σ::Real) = 1.0 ./ (1.0 .+ (sum((x.-y).^2.,1) ./ σ.^2.))
