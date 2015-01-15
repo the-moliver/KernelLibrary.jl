@@ -5,23 +5,39 @@ export power_kernel, log_kernel, spline_kernel, cauchy_kernel, chisquare_kernel,
 # Julia implementation of most of the kernel functions from
 # crsouza.blogspot.com/2010/03/kernel-functions-for-machine-learning.html
 
-linear_kernel(x::Array, y::Array; c::Real=0) = (x'*y .+ c)
+function linear_kernel{T}(x::Array{T}, y::Array{T}; c::Real=0.)
+	c=convert(T,c)
+	(y'*x .+ c)
+end
 
-polynomial_kernel(x::Array, y::Array, d::Real; α::Real=1., c::Real=1.) = (α.*(x'*y) .+ c).^ d
+function polynomial_kernel{T}(x::Array{T}, y::Array{T}, d::Real; α::Real=1., c::Real=1.)
+	d=convert(T,d); α=convert(T,α); c=convert(T,c);
+	(α.*(y'*x) .+ c).^ d
+end
 
-laplacian_kernel(x::Array, y::Array, σ::Real) = exp(-sum((x.-y).^2.,1).^.5 ./ σ)
+function laplacian_kernel{T}(x::Array{T}, y::Array{T}, σ::Real)
+	σ=convert(T, σ)
+	exp(-sum((x.-y).^2.,1).^.5 ./ σ)
+end
 
-gaussian_kernel(x::Array, y::Array, σ::Real) = exp(-sum((x.-y).^2.,1) ./ 2*σ.^ 2.)
+function gaussian_kernel{T}(x::Array{T}, y::Array{T}, σ::Real)
+	σ=convert(T, σ)
+	exp(-sum((x.-y).^2,1) ./ 2*σ.^ 2)
+end
 
-anova_kernel(x::Array, y::Array, σ::Real, d::Real) = sum(exp(-σ*(x.-y).^2.).^d,1)
+function anova_kernel{T}(x::Array{T}, y::Array{T}, σ::Real, d::Real)
+	d=convert(T,d); σ=convert(T, σ)
+	sum(exp(-σ*(x.-y).^2).^d,1)
+end
 
-rbf_kernel(x::Array, y::Array, σ::Real) = exp(-sum(abs(x.-y),1) ./ 2*σ.^ 2.)
+rbf_kernel(x::Array, y::Array, σ::Real) = exp(-sum(abs(x.-y),1) ./ 2*σ.^ 2)
 
-fractrbf_kernel(x::Array, y::Array, σ::Real, fract::Real) = exp(-sum(abs(x .- y).^fract,1).^(1/fract) ./ 2*σ.^ 2.)
+fractrbf_kernel(x::Array, y::Array, σ::Real, fract::Real) = exp(-sum(abs(x .- y).^fract,1).^(1/fract) ./ 2*σ.^ 2)
 
-function rationalquad_kernel(x::Array, y::Array, c::Real)
-	n = sum((x.-y).^2.,1)
-	vec(1 .- n./(n .+ c))
+function rationalquad_kernel{T}(x::Array{T}, y::Array{T}, c::Real)
+	c = convert(T, c)
+	n = sum((x.-y).^2,1)
+	1 .- n./(n .+ c)
 end
 
 multiquad_kernel(x::Array, y::Array, c::Real) = sqrt(sum((x.-y).^2.,1) .+ c^2.)
