@@ -128,7 +128,7 @@ end
 
 function sigmoid_kernel{T}(x::Array{T}, y::Vector{T}; α::Real=1, c::Real=0)
 	α=convert(T, α); c=convert(T, c);
-	tanh(α*x'*y + c)
+	tanh(α*y'*x + c)
 end
 
 motherwavelet(x::Array) = cos(1.75.*x).*exp(-(x.^2)./2)
