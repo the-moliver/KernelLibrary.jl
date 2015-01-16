@@ -1,7 +1,7 @@
 module KernelLibrary
 
 export linear_kernel, polynomial_kernel, laplacian_kernel, gaussian_kernel, anova_kernel, rbf_kernel, fractrbf_kernel, rationalquad_kernel, multiquad_kernel, invmultiquad_kernel, circular_kernel, spherical_kernel, wave_kernel
-export power_kernel, log_kernel, spline_kernel, cauchy_kernel, chisquare_kernel, histintersect_kernel, genhistintersect_kernel, fourier_kernel, sigmoid_kernel, wavelet_kernel, transinvwavelet_kernel
+export power_kernel, log_kernel, spline_kernel, cauchy_kernel, chisquare_kernel, histintersect_kernel, genhistintersect_kernel, gentstudent_kernel, fourier_kernel, sigmoid_kernel, wavelet_kernel, transinvwavelet_kernel
 # Julia implementation of most of the kernel functions from
 # crsouza.blogspot.com/2010/03/kernel-functions-for-machine-learning.html
 
@@ -59,7 +59,7 @@ end
 function circular_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
 	σ=convert(T, σ)
 	n = sqrt(sum((x.-y).^2,1))./σ
-	out = (2/π)*acos(-n) - (2/π)*n*sqrt(1 .- n.^2)
+	out = (2/π).*(acos(-n) - n.*sqrt(1 .- n.^2))
 	out[n.>=σ] = 0
 	out
 end
@@ -88,8 +88,7 @@ function log_kernel{T}(x::Array{T}, y::Vector{T}, d::Real)
 	-log(sqrt(sum((x.-y).^2.,1)).^d + 1)
 end
 
-function spline_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
-	σ=convert(T, σ)
+function spline_kernel{T}(x::Array{T}, y::Vector{T})
 	xy = x.*y
 	mxy = broadcast(min, x,y)
     z = 1 .+ xy .+ xy.*mxy - ((x.+y)/2).*mxy.^2 + (mxy.^3)/3
@@ -123,7 +122,7 @@ function fourier_kernel{T}(x::Array{T}, y::Vector{T}, a::Real)
 	a=convert(T, a)
     dist = x.-y;
     dist[dist==0] = eps(eltype(x))
-    z = sin(a + 1/2)*(dist(i))./sin(dist(i)/2);
+    z = sin((a + 1/2)*dist)./sin(dist/2);
     prod(z,1)
 end
 
