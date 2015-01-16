@@ -121,7 +121,7 @@ end
 function fourier_kernel{T}(x::Array{T}, y::Vector{T}, a::Real)
 	a=convert(T, a)
     dist = x.-y;
-    dist[dist==0] = eps(eltype(x))
+    dist[dist.==0] = eps(eltype(x))
     z = sin((a + 1/2)*dist)./sin(dist/2);
     prod(z,1)
 end
