@@ -59,7 +59,7 @@ end
 function circular_kernel{T}(x::Array{T}, y::Vector{T}, σ::Real)
 	σ=convert(T, σ)
 	n = sqrt(sum((x.-y).^2,1))./σ
-	out = (2/π)*arccos(-n) - (2/π)*n*sqrt(1 .- n.^2)
+	out = (2/π)*acos(-n) - (2/π)*n*sqrt(1 .- n.^2)
 	out[n.>=σ] = 0
 	out
 end
